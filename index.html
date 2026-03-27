@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- REPLACE: Business name and location for SEO -->
+  <title>Your Business Name – City, State</title>
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BAR — clickable banner above the navbar
+       Editable in admin panel. Set enabled:false in defaults.js to hide. -->
+  <a class="announcement-bar" id="announcement-bar" href="signup.html">
+    <span class="announcement-text" data-cms="announcement.text">Your promotional message here. Keep it short — one sentence works best.</span>
+  </a>
+
+  <!-- NAV — REPLACE: brand icon, business name, nav links -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <div class="brand">
+        <span class="brand-icon">⭐</span>
+        <!-- REPLACE: Your Business Name -->
+        <span class="brand-name">Your Business Name</span>
+      </div>
+      <nav>
+        <a href="#services">Services</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+        <!-- REPLACE: CTA label and destination -->
+        <a href="signup.html" style="color:#fff; background:#2B6CB0; padding:0.35rem 0.9rem; border-radius:5px; font-weight:700;">Get Started</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO — headline and subtext editable in admin panel via data-cms attributes -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+      <!-- REPLACE: fallback headline and subtext (also update in js/defaults.js) -->
+      <h1 data-cms="hero.headline">Your Business Tagline Goes Here</h1>
+      <p data-cms="hero.subtext">A short description of what you do, who you serve, and what makes you different.</p>
+      <div class="hero-cta">
+        <!-- Phone and email update automatically from admin panel via data-cms -->
+        <!-- REPLACE: fallback phone number in href and text -->
+        <a href="tel:+10000000000" class="btn-primary" data-cms="contact.phone">📞 (000) 000-0000</a>
+        <!-- REPLACE: fallback email in href and text -->
+        <a href="mailto:you@yourbusiness.com" class="btn-secondary" data-cms="contact.email">✉ you@yourbusiness.com</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUSTED BY MARQUEE — REPLACE: client/customer names
+       Duplicate both .marquee-content blocks with the same names for seamless loop -->
+  <section class="marquee-section" aria-label="Clients we serve">
+    <div class="marquee-label">Trusted by customers across the region</div>
+    <div class="marquee-outer">
+      <div class="marquee-track">
+        <div class="marquee-content">
+          <span class="marquee-item">⭐ Client Name One</span>
+          <span class="marquee-item">⭐ Client Name Two</span>
+          <span class="marquee-item">⭐ Client Name Three</span>
+          <span class="marquee-item">⭐ Client Name Four</span>
+          <span class="marquee-item">⭐ Client Name Five</span>
+        </div>
+        <div class="marquee-content" aria-hidden="true">
+          <span class="marquee-item">⭐ Client Name One</span>
+          <span class="marquee-item">⭐ Client Name Two</span>
+          <span class="marquee-item">⭐ Client Name Three</span>
+          <span class="marquee-item">⭐ Client Name Four</span>
+          <span class="marquee-item">⭐ Client Name Five</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES — app.js rebuilds this grid from Supabase.
+       The static cards below are SEO fallback — keep them in sync with defaults.js -->
+  <section id="services" class="section section-light">
+    <div class="container">
+      <h2 class="section-title">Our Services</h2>
+      <!-- REPLACE: services section description -->
+      <p class="section-sub">A brief description of your business and what you specialize in.</p>
+      <div class="cards" id="services-grid">
+        <!-- REPLACE: static fallback cards (keep in sync with js/defaults.js services array) -->
+        <div class="card">
+          <img src="photos/placeholder.jpg" alt="Service One" loading="lazy" />
+          <div class="card-body"><h3>Service One</h3><p>Describe this service briefly.</p></div>
+        </div>
+        <div class="card">
+          <img src="photos/placeholder.jpg" alt="Service Two" loading="lazy" />
+          <div class="card-body"><h3>Service Two</h3><p>Describe this service briefly.</p></div>
+        </div>
+        <div class="card">
+          <img src="photos/placeholder.jpg" alt="Service Three" loading="lazy" />
+          <div class="card-body"><h3>Service Three</h3><p>Describe this service briefly.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHOTO STRIP — app.js rebuilds this from Supabase gallery array.
+       Add your photos to /photos/ and list them in js/defaults.js gallery array.
+       Both .photo-strip-content blocks must contain the same images for seamless loop. -->
+  <section class="photo-strip-section section section-light">
+    <div class="container">
+      <h2 class="section-title">Our Work</h2>
+      <p class="section-sub">A look at what we do.</p>
+    </div>
+    <div class="photo-strip-outer">
+      <div class="photo-strip-track" id="photo-strip-track">
+        <!-- REPLACE: add your own photo filenames here (and duplicate in the block below) -->
+        <div class="photo-strip-content">
+          <img src="photos/placeholder.jpg" alt="Work sample" loading="eager" />
+        </div>
+        <div class="photo-strip-content" aria-hidden="true">
+          <img src="photos/placeholder.jpg" alt="" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING — app.js rebuilds this grid from Supabase.
+       Static tables below are SEO fallback — keep in sync with defaults.js -->
+  <section id="pricing" class="section section-dark">
+    <div class="container">
+      <!-- REPLACE: pricing section headline -->
+      <h2 class="section-title">Pricing</h2>
+      <p class="section-sub">Pricing is per unit unless otherwise noted. Call for custom quotes.</p>
+      <!-- app.js rebuilds this from Supabase; static tables below are SEO fallback -->
+      <div class="pricing-grid" id="pricing-grid">
+        <!-- REPLACE: static fallback pricing (keep in sync with js/defaults.js pricing array) -->
+        <div class="price-table"><h3>Category One</h3><table>
+          <tr><td>Item A</td><td>$00</td></tr>
+          <tr><td>Item B</td><td>$00</td></tr>
+          <tr><td>Item C</td><td>Call</td></tr>
+        </table></div>
+        <div class="price-table"><h3>Category Two</h3><table>
+          <tr><td>Item A</td><td>$00</td></tr>
+          <tr><td>Item B</td><td>$00</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT — all fields update via data-cms attributes from admin panel -->
+  <section id="contact" class="section section-light">
+    <div class="container contact-inner">
+      <div class="contact-info">
+        <h2 class="section-title">Contact Us</h2>
+        <!-- REPLACE: fallback contact intro (also update in js/defaults.js) -->
+        <p data-cms="contact.intro">A sentence about how to get in touch and what to expect.</p>
+        <div class="contact-details">
+          <div class="contact-item">
+            <span class="icon">📍</span>
+            <div>
+              <strong>Address</strong><br />
+              <!-- REPLACE: fallback address (also update in js/defaults.js) -->
+              <span data-cms="contact.address">123 Main Street<br />Your City, State 00000</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="icon">📞</span>
+            <div>
+              <strong>Phone</strong><br />
+              <a href="tel:+10000000000" data-cms="contact.phone">(000) 000-0000</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="icon">✉️</span>
+            <div>
+              <strong>Email</strong><br />
+              <a href="mailto:you@yourbusiness.com" data-cms="contact.email">you@yourbusiness.com</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="icon">🕐</span>
+            <div>
+              <strong>Hours</strong><br />
+              <span data-cms="contact.hours">Mon–Fri 9am–5pm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- REPLACE: update the Google Maps embed src with your business address
+           Get embed URL: maps.google.com → your address → Share → Embed a map → copy src -->
+      <div class="map-placeholder">
+        <iframe
+          title="Business Location"
+          src="https://www.google.com/maps/embed?pb=YOUR_EMBED_CODE_HERE"
+          width="100%" height="350" style="border:0;"
+          allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        <div class="map-fallback">
+          <!-- REPLACE: fallback address text and Google Maps link -->
+          <p>📍 <strong>123 Main Street, Your City, State 00000</strong></p>
+          <a href="https://maps.google.com/?q=123+Main+Street" target="_blank" class="btn-primary">Open in Google Maps</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER — editable in admin panel -->
+  <footer class="footer">
+    <div class="container">
+      <!-- REPLACE: fallback footer text (also update in js/defaults.js) -->
+      <p data-cms="footer.text">&copy; 2025 Your Business Name &nbsp;|&nbsp; 123 Main St, Your City &nbsp;|&nbsp; (000) 000-0000</p>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX — no changes needed; works with any photo strip images -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Photo viewer">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">&#10005;</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+  </div>
+  <script>
+    (function () {
+      const lightbox    = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+
+      function open(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || '';
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function close() {
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        setTimeout(() => { if (!lightbox.classList.contains('open')) lightboxImg.src = ''; }, 300);
+      }
+
+      document.getElementById('photo-strip-track').addEventListener('click', function (e) {
+        const img = e.target.closest('img');
+        if (img) open(img.src, img.alt);
+      });
+
+      lightbox.addEventListener('click', function (e) {
+        if (e.target !== lightboxImg) close();
+      });
+
+      document.getElementById('lightbox-close').addEventListener('click', close);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    })();
+  </script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
