@@ -633,6 +633,7 @@ html, body {
 }
 .toggle-switch input:checked ~ .toggle-track .toggle-thumb { transform: translateX(22px); }
 .toggle-label { font-size: 0.95rem; color: var(--muted); font-weight: 500; }
+.toggle-switch + .field-hint { margin-top: 0.4rem; margin-bottom: 0; }
 
 /* ── GALLERY EDITOR ───────────────────────────── */
 .gallery-upload-area {
