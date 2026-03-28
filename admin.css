@@ -703,6 +703,34 @@ html, body {
 .gallery-item:hover .gallery-delete-btn,
 .gallery-item:focus-within .gallery-delete-btn { opacity: 1; }
 
+/* ── LANGUAGE TOGGLE ─────────────────────────── */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #EDF2F7;
+  border-radius: 8px;
+  padding: 0.2rem;
+}
+.lang-btn {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.4rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.15s, background 0.15s, transform 0.1s;
+  line-height: 1;
+}
+.lang-btn:hover  { opacity: 0.75; background: #E2E8F0; }
+.lang-btn.active { opacity: 1; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+.lang-btn.active:hover { transform: scale(1.05); }
+
 /* ── RESPONSIVE ───────────────────────────────── */
 @media (max-width: 768px) {
   :root { --nav-width: 0px; }

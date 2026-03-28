@@ -17,19 +17,19 @@
       <div class="login-logo">⭐</div>
       <!-- REPLACE: Your Business Name -->
       <h1>Your Business Name</h1>
-      <p class="login-sub">Admin Login — Website Editor</p>
+      <p class="login-sub" data-i18n="loginSub">Admin Login — Website Editor</p>
 
       <div class="login-error" id="login-error"></div>
 
       <div class="form-group">
-        <label for="login-email">Email Address</label>
+        <label for="login-email" data-i18n="loginEmailLabel">Email Address</label>
         <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email" />
       </div>
       <div class="form-group">
-        <label for="login-password">Password</label>
+        <label for="login-password" data-i18n="loginPasswordLabel">Password</label>
         <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
       </div>
-      <button class="btn-login" id="login-btn">Sign In</button>
+      <button class="btn-login" id="login-btn" data-i18n="loginBtn">Sign In</button>
     </div>
   </div>
 
@@ -44,46 +44,46 @@
         <span class="brand-icon">⭐</span>
         <!-- REPLACE: Your Business Name -->
         <div class="brand-name">Your Business Name</div>
-        <div class="brand-sub">Website Editor</div>
+        <div class="brand-sub" data-i18n="brandSub">Website Editor</div>
       </div>
 
       <nav class="sidebar-nav" id="sidebar-nav">
         <button data-section="announcement">
           <span class="nav-icon">📢</span>
-          <span>Announcement Bar</span>
+          <span data-i18n="navAnnouncement">Announcement Bar</span>
         </button>
         <button class="active" data-section="hero">
           <span class="nav-icon">🏠</span>
-          <span>Homepage Banner</span>
+          <span data-i18n="navHero">Homepage Banner</span>
         </button>
         <button data-section="services">
           <span class="nav-icon">⚙️</span>
-          <span>Our Services</span>
+          <span data-i18n="navServices">Our Services</span>
         </button>
         <button data-section="pricing">
           <span class="nav-icon">💲</span>
-          <span>Price List</span>
+          <span data-i18n="navPricing">Price List</span>
         </button>
         <button data-section="contact">
           <span class="nav-icon">📞</span>
-          <span>Contact Info</span>
+          <span data-i18n="navContact">Contact Info</span>
         </button>
         <button data-section="footer">
           <span class="nav-icon">📄</span>
-          <span>Page Footer</span>
+          <span data-i18n="navFooter">Page Footer</span>
         </button>
         <button data-section="leads">
           <span class="nav-icon">📋</span>
-          <span>New Leads <span id="leads-badge" style="display:none; background:#2B6CB0; color:#fff; border-radius:10px; padding:1px 7px; font-size:0.75rem; margin-left:4px;"></span></span>
+          <span><span data-i18n="navLeads">New Leads</span> <span id="leads-badge" style="display:none; background:#2B6CB0; color:#fff; border-radius:10px; padding:1px 7px; font-size:0.75rem; margin-left:4px;"></span></span>
         </button>
         <button data-section="gallery">
           <span class="nav-icon">📸</span>
-          <span>Gallery Photos</span>
+          <span data-i18n="navGallery">Gallery Photos</span>
         </button>
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn-logout" id="logout-btn">Sign Out</button>
+        <button class="btn-logout" id="logout-btn" data-i18n="signOut">Sign Out</button>
       </div>
     </aside>
 
@@ -94,9 +94,17 @@
           <h2 id="topbar-title">Homepage Banner</h2>
           <div class="page-hint" id="topbar-hint">Edit the headline and description visitors see first</div>
         </div>
-        <a href="index.html" target="_blank" style="font-size:0.9rem; color:#2B6CB0; font-weight:600;">
-          👁 View Live Site →
-        </a>
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <!-- LANGUAGE TOGGLE -->
+          <div class="lang-toggle" id="lang-toggle">
+            <button class="lang-btn active" data-lang="en" title="English">🇺🇸</button>
+            <button class="lang-btn" data-lang="ko" title="한국어">🇰🇷</button>
+          </div>
+          <a href="index.html" target="_blank" id="view-live-link" data-i18n="viewLive"
+             style="font-size:0.9rem; color:#2B6CB0; font-weight:600; white-space:nowrap;">
+            👁 View Live Site →
+          </a>
+        </div>
       </div>
 
       <div class="admin-content">
@@ -104,30 +112,30 @@
         <!-- ── ANNOUNCEMENT SECTION ─────────────────────────── -->
         <div class="admin-section" id="section-announcement">
           <div class="section-header">
-            <h3>📢 Announcement Bar</h3>
-            <p>This banner appears at the very top of your website. Use it for promotions, notices, or any timely message. Turn it off with the toggle below.</p>
+            <h3 data-i18n="annH3">📢 Announcement Bar</h3>
+            <p data-i18n="annDesc">This banner appears at the very top of your website. Use it for promotions, notices, or any timely message. Turn it off with the toggle below.</p>
           </div>
 
           <div class="field-group">
-            <label class="field-label">Show Announcement Bar</label>
-            <span class="field-hint">Turn this off when you don't have a current promotion</span>
+            <label class="field-label" data-i18n="annShowToggleLabel">Show Announcement Bar</label>
+            <span class="field-hint" data-i18n="annShowToggleHint">Turn this off when you don't have a current promotion</span>
             <label class="toggle-switch">
               <input type="checkbox" id="announcement-enabled" checked />
               <span class="toggle-track"><span class="toggle-thumb"></span></span>
-              <span class="toggle-label" id="announcement-enabled-label">Showing on website</span>
+              <span class="toggle-label" id="announcement-enabled-label" data-i18n="annShowing">Showing on website</span>
             </label>
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="announcement-text">Announcement Message</label>
-            <span class="field-hint">Keep it short — one sentence works best</span>
+            <label class="field-label" for="announcement-text" data-i18n="annTextLabel">Announcement Message</label>
+            <span class="field-hint" data-i18n="annTextHint">Keep it short — one sentence works best</span>
             <input type="text" class="admin-input" id="announcement-text"
               placeholder="e.g. New customers get 10% off their first order" />
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="announcement-cta-url">Banner Link</label>
-            <span class="field-hint">Page visitors go to when they click the banner</span>
+            <label class="field-label" for="announcement-cta-url" data-i18n="annUrlLabel">Banner Link</label>
+            <span class="field-hint" data-i18n="annUrlHint">Page visitors go to when they click the banner</span>
             <input type="text" class="admin-input" id="announcement-cta-url" placeholder="signup.html" />
           </div>
         </div>
@@ -135,30 +143,30 @@
         <!-- ── HERO SECTION ─────────────────────────────────── -->
         <div class="admin-section active" id="section-hero">
           <div class="section-header">
-            <h3>🏠 Homepage Banner</h3>
-            <p>This is the first thing visitors read when they open your website. Keep the headline short and the description friendly.</p>
+            <h3 data-i18n="heroH3">🏠 Homepage Banner</h3>
+            <p data-i18n="heroDesc">This is the first thing visitors read when they open your website. Keep the headline short and the description friendly.</p>
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="hero-headline">Main Headline</label>
-            <span class="field-hint">The big bold text at the top of your page</span>
+            <label class="field-label" for="hero-headline" data-i18n="heroHeadlineLabel">Main Headline</label>
+            <span class="field-hint" data-i18n="heroHeadlineHint">The big bold text at the top of your page</span>
             <input type="text" class="admin-input" id="hero-headline" placeholder="e.g. Quality Work, Fast Turnaround" />
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="hero-subtext">Description</label>
-            <span class="field-hint">A sentence or two about your business — who you serve and what makes you different</span>
+            <label class="field-label" for="hero-subtext" data-i18n="heroSubtextLabel">Description</label>
+            <span class="field-hint" data-i18n="heroSubtextHint">A sentence or two about your business — who you serve and what makes you different</span>
             <textarea class="admin-textarea" id="hero-subtext" rows="4" placeholder="We're a family-run business serving customers across the region..."></textarea>
           </div>
 
           <div class="field-group">
-            <label class="field-label">Phone Number (shown on Contact Us button)</label>
-            <span class="field-hint">Include the area code, e.g. (555) 123-4567</span>
+            <label class="field-label" data-i18n="heroPhoneLabel">Phone Number (shown on Contact Us button)</label>
+            <span class="field-hint" data-i18n="heroPhoneHint">Include the area code, e.g. (555) 123-4567</span>
             <input type="text" class="admin-input" id="hero-phone" placeholder="(000) 000-0000" />
           </div>
 
           <div class="field-group">
-            <label class="field-label">Email Address (shown on Contact Us button)</label>
+            <label class="field-label" data-i18n="heroEmailLabel">Email Address (shown on Contact Us button)</label>
             <input type="text" class="admin-input" id="hero-email" placeholder="you@yourbusiness.com" />
           </div>
         </div>
@@ -166,30 +174,25 @@
         <!-- ── SERVICES SECTION ─────────────────────────────── -->
         <div class="admin-section" id="section-services">
           <div class="section-header">
-            <h3>⚙️ Our Services</h3>
-            <p>Edit the title, description, and photo for each service card on your website. Use the switch to show or hide a card without deleting it.</p>
+            <h3 data-i18n="servicesH3">⚙️ Our Services</h3>
+            <p data-i18n="servicesDesc">Edit the title, description, and photo for each service card on your website. Use the switch to show or hide a card without deleting it.</p>
           </div>
-
-          <div id="services-editor">
-            <!-- Populated by admin.js -->
-          </div>
+          <div id="services-editor"><!-- Populated by admin.js --></div>
         </div>
 
         <!-- ── PRICING SECTION ──────────────────────────────── -->
         <div class="admin-section" id="section-pricing">
           <div class="section-header">
-            <h3>💲 Price List</h3>
-            <p>Add, edit, or remove price items from each category.<br>
-               <strong>To remove an item:</strong> click the ✕ button on the right.<br>
-               <strong>To add an item:</strong> click "+ Add Item" at the bottom of that category.<br>
-               When you're done, click <strong>Save Changes</strong> at the bottom.</p>
+            <h3 data-i18n="pricingH3">💲 Price List</h3>
+            <p>
+              <span data-i18n="pricingDesc">Add, edit, or remove price items from each category.</span><br>
+              <strong data-i18n="pricingRemove">To remove an item: click the ✕ button on the right.</strong><br>
+              <strong data-i18n="pricingAdd">To add an item: click "+ Add Item" at the bottom of that category.</strong><br>
+              <span data-i18n="pricingSave">When you're done, click Save Changes at the bottom.</span>
+            </p>
           </div>
-
-          <div id="pricing-editor">
-            <!-- Populated by admin.js -->
-          </div>
-
-          <button class="add-table-btn" id="add-table-btn">
+          <div id="pricing-editor"><!-- Populated by admin.js --></div>
+          <button class="add-table-btn" id="add-table-btn" data-i18n="addCategoryBtn">
             ➕ Add a New Price Category
           </button>
         </div>
@@ -197,35 +200,35 @@
         <!-- ── CONTACT SECTION ──────────────────────────────── -->
         <div class="admin-section" id="section-contact">
           <div class="section-header">
-            <h3>📞 Contact Information</h3>
-            <p>Update your phone number, email, address, and hours. Changes will appear on the Contact section of your website.</p>
+            <h3 data-i18n="contactH3">📞 Contact Information</h3>
+            <p data-i18n="contactDesc">Update your phone number, email, address, and hours. Changes will appear on the Contact section of your website.</p>
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="contact-phone">Phone Number</label>
+            <label class="field-label" for="contact-phone" data-i18n="contactPhoneLabel">Phone Number</label>
             <input type="text" class="admin-input" id="contact-phone" placeholder="(000) 000-0000" />
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="contact-email">Email Address</label>
+            <label class="field-label" for="contact-email" data-i18n="contactEmailLabel">Email Address</label>
             <input type="text" class="admin-input" id="contact-email" placeholder="you@yourbusiness.com" />
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="contact-address">Street Address</label>
-            <span class="field-hint">Press Enter between the street and city/zip</span>
+            <label class="field-label" for="contact-address" data-i18n="contactAddressLabel">Street Address</label>
+            <span class="field-hint" data-i18n="contactAddressHint">Press Enter between the street and city/zip</span>
             <textarea class="admin-textarea" id="contact-address" rows="3" placeholder="123 Main Street&#10;Your City, State 00000"></textarea>
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="contact-hours">Business Hours</label>
-            <span class="field-hint">e.g. Mon–Fri 9am–5pm, or "Please call for current hours"</span>
+            <label class="field-label" for="contact-hours" data-i18n="contactHoursLabel">Business Hours</label>
+            <span class="field-hint" data-i18n="contactHoursHint">e.g. Mon–Fri 9am–5pm, or "Please call for current hours"</span>
             <input type="text" class="admin-input" id="contact-hours" placeholder="Mon–Fri 9am–5pm" />
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="contact-intro">Contact Section Description</label>
-            <span class="field-hint">The paragraph of text above your contact details</span>
+            <label class="field-label" for="contact-intro" data-i18n="contactIntroLabel">Contact Section Description</label>
+            <span class="field-hint" data-i18n="contactIntroHint">The paragraph of text above your contact details</span>
             <textarea class="admin-textarea" id="contact-intro" rows="3"></textarea>
           </div>
         </div>
@@ -233,23 +236,20 @@
         <!-- ── LEADS SECTION ────────────────────────────────── -->
         <div class="admin-section" id="section-leads">
           <div class="section-header">
-            <h3>📋 New Leads — Sign-Ups</h3>
-            <p>These are people who filled out the sign-up form on your website. Call or email them to follow up.</p>
+            <h3 data-i18n="leadsH3">📋 New Leads — Sign-Ups</h3>
+            <p data-i18n="leadsDesc">These are people who filled out the sign-up form on your website. Call or email them to follow up.</p>
           </div>
-          <div id="leads-table-container">
-            <!-- Populated by admin.js -->
-          </div>
+          <div id="leads-table-container"><!-- Populated by admin.js --></div>
         </div>
 
         <!-- ── FOOTER SECTION ───────────────────────────────── -->
         <div class="admin-section" id="section-footer">
           <div class="section-header">
-            <h3>📄 Page Footer</h3>
-            <p>This is the small line of text at the very bottom of your website.</p>
+            <h3 data-i18n="footerH3">📄 Page Footer</h3>
+            <p data-i18n="footerDesc">This is the small line of text at the very bottom of your website.</p>
           </div>
-
           <div class="field-group">
-            <label class="field-label" for="footer-text">Footer Text</label>
+            <label class="field-label" for="footer-text" data-i18n="footerTextLabel">Footer Text</label>
             <input type="text" class="admin-input" id="footer-text" />
           </div>
         </div>
@@ -257,27 +257,27 @@
         <!-- ── GALLERY SECTION ───────────────────────────────── -->
         <div class="admin-section" id="section-gallery">
           <div class="section-header">
-            <h3>📸 Gallery Photos</h3>
-            <p>Add or remove photos that appear in the "Our Work" carousel on your website.<br>
-               <strong>To delete a photo:</strong> hover over it and click the red ✕ button.<br>
-               <strong>To add photos:</strong> click the Upload button below. When done, click <strong>Save Changes</strong>.</p>
+            <h3 data-i18n="galleryH3">📸 Gallery Photos</h3>
+            <p>
+              <span data-i18n="galleryDesc">Add or remove photos that appear in the "Our Work" carousel on your website.</span><br>
+              <strong data-i18n="galleryDescDelete">To delete a photo: hover over it and click the red ✕ button.</strong><br>
+              <strong data-i18n="galleryDescAdd">To add photos: click the Upload button below. When done, click Save Changes.</strong>
+            </p>
           </div>
           <div class="gallery-upload-area" id="gallery-upload-trigger">
             <div style="font-size:2rem; margin-bottom:0.5rem;">📷</div>
-            <p>Click here to upload new photos</p>
-            <p class="upload-hint">You can select multiple photos at once. JPG or PNG files.</p>
+            <p data-i18n="galleryClickUpload">Click here to upload new photos</p>
+            <p class="upload-hint" data-i18n="galleryUploadHint">You can select multiple photos at once. JPG or PNG files.</p>
           </div>
-          <div class="gallery-upload-progress" id="gallery-upload-progress">Uploading photos, please wait…</div>
-          <div class="gallery-grid" id="gallery-grid">
-            <!-- Populated by admin.js -->
-          </div>
+          <div class="gallery-upload-progress" id="gallery-upload-progress" data-i18n="galleryUploading">Uploading photos, please wait…</div>
+          <div class="gallery-grid" id="gallery-grid"><!-- Populated by admin.js --></div>
         </div>
 
       </div><!-- /.admin-content -->
 
       <!-- SAVE BAR -->
       <div class="save-bar">
-        <button class="btn-save" id="save-btn">💾 Save Changes</button>
+        <button class="btn-save" id="save-btn" data-i18n="saveBtn">💾 Save Changes</button>
         <span style="color:#4A5568; font-size:0.9rem;" id="save-status"></span>
       </div>
     </div><!-- /.admin-main -->

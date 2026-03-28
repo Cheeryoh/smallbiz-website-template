@@ -1,5 +1,6 @@
-import { supabase }          from './supabase-config.js';
-import { DEFAULTS }           from './defaults.js';
+import { supabase }               from './supabase-config.js';
+import { DEFAULTS }                from './defaults.js';
+import { t, setLanguage, getLang } from './i18n.js';
 
 // ── In-memory draft ───────────────────────────────────────────────────────────
 let draft = JSON.parse(JSON.stringify(DEFAULTS));
@@ -30,6 +31,29 @@ function showToast(message, type = 'success') {
   setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
+// ── LANGUAGE TOGGLE ───────────────────────────────────────────────────────────
+document.getElementById('lang-toggle').addEventListener('click', e => {
+  const btn = e.target.closest('.lang-btn');
+  if (!btn) return;
+  setLanguage(btn.dataset.lang);
+  // Re-render dynamic sections so their strings update too
+  renderServicesEditor();
+  renderPricingEditor();
+  // Re-render leads/gallery if visible
+  if ($('section-leads').classList.contains('active'))   loadLeads();
+  if ($('section-gallery').classList.contains('active')) renderGalleryEditor();
+  // Update toggle label, save button, announcement label
+  saveBtn.textContent = t('saveBtn');
+  const annEnabled = $('announcement-enabled');
+  if (annEnabled) {
+    $('announcement-enabled-label').textContent = annEnabled.checked
+      ? t('annShowing') : t('annHidden');
+  }
+});
+
+// Apply saved language on load (before auth resolves)
+setLanguage(getLang());
+
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 supabase.auth.onAuthStateChange((event, session) => {
   if (session) {
@@ -48,24 +72,24 @@ $('login-btn').addEventListener('click', async () => {
   loginError.classList.remove('visible');
 
   if (!email || !password) {
-    loginError.textContent = 'Please enter your email and password.';
+    loginError.textContent = t('missingCredentials');
     loginError.classList.add('visible');
     return;
   }
 
-  $('login-btn').textContent = 'Signing in…';
+  $('login-btn').textContent = t('signingIn');
   $('login-btn').disabled = true;
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     const msgs = {
-      'Invalid login credentials': 'Wrong email or password. Please try again.',
-      'Email not confirmed':        'Please confirm your email address first.'
+      'Invalid login credentials': t('wrongCredentials'),
+      'Email not confirmed':        t('emailNotConfirmed')
     };
-    loginError.textContent = msgs[error.message] || 'Could not sign in. Please try again.';
+    loginError.textContent = msgs[error.message] || t('signInFailed');
     loginError.classList.add('visible');
-    $('login-btn').textContent = 'Sign In';
+    $('login-btn').textContent = t('loginBtn');
     $('login-btn').disabled = false;
   }
 });
@@ -79,16 +103,21 @@ $('logout-btn').addEventListener('click', async () => {
 });
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
-const sectionMeta = {
-  announcement: { title: 'Announcement Bar',     hint: 'The banner at the very top of your website' },
-  hero:         { title: 'Homepage Banner',       hint: 'Edit the headline and description visitors see first' },
-  services: { title: 'Our Services',             hint: 'Edit service card titles, descriptions, and photos' },
-  pricing:  { title: 'Price List',               hint: 'Add, edit, or remove items from your pricing tables' },
-  contact:  { title: 'Contact Information',      hint: 'Update your phone, email, address, and hours' },
-  footer:   { title: 'Page Footer',              hint: 'Edit the text at the very bottom of your website' },
-  leads:    { title: 'New Leads — Sign-Ups',     hint: 'People who filled out your sign-up form' },
-  gallery:  { title: 'Gallery Photos',           hint: 'Upload and remove photos shown in the "Our Work" section' }
-};
+// sectionMeta reads from t() so it reflects the active language at call time
+function getSectionMeta(section) {
+  const map = {
+    announcement: { titleKey: 'titleAnnouncement', hintKey: 'hintAnnouncement' },
+    hero:         { titleKey: 'titleHero',         hintKey: 'hintHero'         },
+    services:     { titleKey: 'titleServices',     hintKey: 'hintServices'     },
+    pricing:      { titleKey: 'titlePricing',      hintKey: 'hintPricing'      },
+    contact:      { titleKey: 'titleContact',      hintKey: 'hintContact'      },
+    footer:       { titleKey: 'titleFooter',       hintKey: 'hintFooter'       },
+    leads:        { titleKey: 'titleLeads',        hintKey: 'hintLeads'        },
+    gallery:      { titleKey: 'titleGallery',      hintKey: 'hintGallery'      },
+  };
+  const m = map[section];
+  return m ? { title: t(m.titleKey), hint: t(m.hintKey) } : { title: section, hint: '' };
+}
 
 document.getElementById('sidebar-nav').addEventListener('click', e => {
   const btn = e.target.closest('button[data-section]');
@@ -101,13 +130,14 @@ document.getElementById('sidebar-nav').addEventListener('click', e => {
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.getElementById('section-' + section).classList.add('active');
 
-  $('topbar-title').textContent = sectionMeta[section].title;
-  $('topbar-hint').textContent  = sectionMeta[section].hint;
+  const meta = getSectionMeta(section);
+  $('topbar-title').textContent = meta.title;
+  $('topbar-hint').textContent  = meta.hint;
 });
 
 // ── LOAD DRAFT ────────────────────────────────────────────────────────────────
 async function loadDraft() {
-  saveStatus.textContent = 'Loading your content…';
+  saveStatus.textContent = t('loadingContent');
   try {
     const { data, error } = await supabase
       .from('site_content')
@@ -119,13 +149,13 @@ async function loadDraft() {
       const remote = data.content;
       // Merge pricing by id — DEFAULTS tables always appear as base
       const remotePricingById = Object.fromEntries(
-        (remote.pricing || []).map(t => [t.id, t])
+        (remote.pricing || []).map(tbl => [tbl.id, tbl])
       );
-      const mergedPricing = DEFAULTS.pricing.map(t =>
-        remotePricingById[t.id] ? { ...t, ...remotePricingById[t.id] } : t
+      const mergedPricing = DEFAULTS.pricing.map(tbl =>
+        remotePricingById[tbl.id] ? { ...tbl, ...remotePricingById[tbl.id] } : tbl
       );
-      (remote.pricing || []).forEach(t => {
-        if (!DEFAULTS.pricing.find(d => d.id === t.id)) mergedPricing.push(t);
+      (remote.pricing || []).forEach(tbl => {
+        if (!DEFAULTS.pricing.find(d => d.id === tbl.id)) mergedPricing.push(tbl);
       });
       draft = {
         announcement: { ...DEFAULTS.announcement, ...remote.announcement },
@@ -148,7 +178,8 @@ async function loadDraft() {
 function populateForms() {
   const ann = draft.announcement || DEFAULTS.announcement;
   $('announcement-enabled').checked  = ann.enabled !== false;
-  $('announcement-enabled-label').textContent = ann.enabled !== false ? 'Showing on website' : 'Hidden from website';
+  $('announcement-enabled-label').textContent = ann.enabled !== false
+    ? t('annShowing') : t('annHidden');
   $('announcement-text').value       = ann.text   || '';
   $('announcement-cta-url').value    = ann.ctaUrl || 'signup.html';
 
@@ -172,10 +203,11 @@ function populateForms() {
 // ── SERVICES EDITOR ───────────────────────────────────────────────────────────
 function renderServicesEditor() {
   const container = $('services-editor');
+  if (!container) return;
   container.innerHTML = draft.services.map((svc, i) => `
     <div class="service-editor-card" data-svc-index="${i}">
       <div class="service-card-header">
-        <strong>Service Card ${i + 1}</strong>
+        <strong>${t('serviceCardN')} ${i + 1}</strong>
       </div>
 
       <img class="service-img-preview" id="svc-img-preview-${i}"
@@ -183,19 +215,19 @@ function renderServicesEditor() {
 
       <div style="margin-bottom:1rem;">
         <button class="btn-upload-photo" data-upload-svc="${i}">
-          📷 Replace Photo
+          ${t('replacePhoto')}
         </button>
-        <div class="upload-progress" id="svc-upload-progress-${i}">Uploading photo…</div>
+        <div class="upload-progress" id="svc-upload-progress-${i}">${t('uploadingPhoto')}</div>
       </div>
 
       <div class="field-group">
-        <label class="field-label" for="svc-title-${i}">Card Title</label>
+        <label class="field-label" for="svc-title-${i}">${t('cardTitleLabel')}</label>
         <input type="text" class="admin-input" id="svc-title-${i}"
                value="${esc(svc.title)}" placeholder="e.g. Service Name" />
       </div>
 
       <div class="field-group" style="margin-bottom:0.75rem;">
-        <label class="field-label" for="svc-desc-${i}">Description</label>
+        <label class="field-label" for="svc-desc-${i}">${t('cardDescLabel')}</label>
         <textarea class="admin-textarea" id="svc-desc-${i}"
                   rows="3">${esc(svc.description)}</textarea>
       </div>
@@ -206,7 +238,7 @@ function renderServicesEditor() {
           <span class="toggle-slider"></span>
         </label>
         <span style="font-weight:600; font-size:0.95rem;">
-          Show this card on the website
+          ${t('showCardLabel')}
         </span>
       </div>
     </div>
@@ -226,21 +258,22 @@ function renderServicesEditor() {
 // ── PRICING EDITOR ────────────────────────────────────────────────────────────
 function renderPricingEditor() {
   const container = $('pricing-editor');
+  if (!container) return;
   container.innerHTML = draft.pricing.map((table, ti) => `
     <div class="pricing-table-editor" data-table-index="${ti}">
       <div class="pricing-table-header">
         <input class="table-heading-input" type="text"
-               value="${esc(table.heading)}" placeholder="Category name"
+               value="${esc(table.heading)}" placeholder="${t('categoryPlaceholder')}"
                data-table-heading="${ti}" />
         <button class="btn-delete-table" data-delete-table="${ti}">
-          🗑 Delete Category
+          ${t('deleteCategoryBtn')}
         </button>
       </div>
       <div class="price-rows-list" id="rows-${ti}">
         ${table.rows.map((row, ri) => rowHTML(ti, ri, row)).join('')}
       </div>
       <button class="add-row-btn" data-add-row="${ti}">
-        + Add Item to this Category
+        ${t('addRowBtn')}
       </button>
     </div>
   `).join('');
@@ -251,8 +284,8 @@ function renderPricingEditor() {
 function rowHTML(ti, ri, row) {
   return `
     <div class="price-row" data-row-index="${ri}">
-      <input type="text" class="row-label" value="${esc(row.label)}" placeholder="Item name" />
-      <input type="text" class="row-price" value="${esc(row.price)}" placeholder="$0" />
+      <input type="text" class="row-label" value="${esc(row.label)}" placeholder="${t('itemNamePlaceholder')}" />
+      <input type="text" class="row-price" value="${esc(row.price)}" placeholder="${t('itemPricePlaceholder')}" />
       <button class="btn-delete-row" data-delete-row="${ri}"
               data-table-index="${ti}" title="Remove this item">✕</button>
     </div>`;
@@ -272,7 +305,7 @@ function bindPricingEvents(container) {
     if (!delBtn) return;
     const ti = parseInt(delBtn.dataset.tableIndex, 10);
     const ri = parseInt(delBtn.dataset.deleteRow, 10);
-    if (!confirm('Remove this price item?')) return;
+    if (!confirm(t('deleteRowConfirm'))) return;
     draft.pricing[ti].rows.splice(ri, 1);
     rerenderTableRows(ti);
   });
@@ -281,7 +314,7 @@ function bindPricingEvents(container) {
     btn.addEventListener('click', () => {
       const ti   = parseInt(btn.dataset.deleteTable, 10);
       const name = draft.pricing[ti].heading;
-      if (!confirm(`Delete the entire "${name}" category and all its prices?`)) return;
+      if (!confirm(t('deleteCategoryConfirm').replace('{name}', name))) return;
       draft.pricing.splice(ti, 1);
       renderPricingEditor();
     });
@@ -295,7 +328,7 @@ function rerenderTableRows(ti) {
 }
 
 $('add-table-btn').addEventListener('click', () => {
-  draft.pricing.push({ id: 'table-' + Date.now(), heading: 'New Category', rows: [{ label: '', price: '' }] });
+  draft.pricing.push({ id: 'table-' + Date.now(), heading: t('newCategoryName'), rows: [{ label: '', price: '' }] });
   renderPricingEditor();
   document.querySelectorAll('.pricing-table-editor').at(-1)
     ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -327,9 +360,9 @@ fileInput.addEventListener('change', async () => {
 
       draft.services[idx].imageUrl = urlData.publicUrl;
       preview.src = urlData.publicUrl;
-      showToast('Photo uploaded! Remember to click Save Changes.');
+      showToast(t('toastPhotoUploaded'));
     } catch (err) {
-      showToast('Photo upload failed. Please try again.', 'error');
+      showToast(t('toastPhotoFailed'), 'error');
       console.error(err);
     } finally {
       progress.classList.remove('visible');
@@ -379,7 +412,7 @@ function collectDraft() {
 async function loadLeads() {
   const container = $('leads-table-container');
   const badge     = $('leads-badge');
-  container.innerHTML = '<p style="color:#4A5568;">Loading leads…</p>';
+  container.innerHTML = `<p style="color:#4A5568;">${t('leadsLoading')}</p>`;
 
   const { data, error } = await supabase
     .from('leads')
@@ -387,7 +420,7 @@ async function loadLeads() {
     .order('created_at', { ascending: false });
 
   if (error) {
-    container.innerHTML = '<p style="color:#C53030;">Could not load leads. Please try again.</p>';
+    container.innerHTML = `<p style="color:#C53030;">${t('leadsError')}</p>`;
     return;
   }
 
@@ -395,8 +428,8 @@ async function loadLeads() {
     container.innerHTML = `
       <div style="text-align:center; padding:3rem; color:#718096;">
         <div style="font-size:3rem; margin-bottom:1rem;">📭</div>
-        <p style="font-size:1.1rem; font-weight:600;">No leads yet.</p>
-        <p>When someone fills out the sign-up form, they'll appear here.</p>
+        <p style="font-size:1.1rem; font-weight:600;">${t('leadsEmptyTitle')}</p>
+        <p>${t('leadsEmptyDesc')}</p>
       </div>`;
     return;
   }
@@ -404,24 +437,29 @@ async function loadLeads() {
   badge.textContent = data.length;
   badge.style.display = 'inline';
 
+  const locale = getLang() === 'ko' ? 'ko-KR' : 'en-US';
+  const totalStr = data.length === 1
+    ? t('leadsTotal').replace('{n}', data.length)
+    : t('leadsTotalPlural').replace('{n}', data.length);
+
   container.innerHTML = `
     <div style="overflow-x:auto;">
       <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
         <thead>
           <tr style="background:#EDF2F7; text-align:left;">
-            <th style="padding:0.75rem 1rem; font-weight:700; white-space:nowrap;">Date</th>
-            <th style="padding:0.75rem 1rem; font-weight:700;">Name</th>
-            <th style="padding:0.75rem 1rem; font-weight:700;">Business</th>
-            <th style="padding:0.75rem 1rem; font-weight:700;">Phone</th>
-            <th style="padding:0.75rem 1rem; font-weight:700;">Email</th>
-            <th style="padding:0.75rem 1rem; font-weight:700;">City</th>
+            <th style="padding:0.75rem 1rem; font-weight:700; white-space:nowrap;">${t('leadsColDate')}</th>
+            <th style="padding:0.75rem 1rem; font-weight:700;">${t('leadsColName')}</th>
+            <th style="padding:0.75rem 1rem; font-weight:700;">${t('leadsColBusiness')}</th>
+            <th style="padding:0.75rem 1rem; font-weight:700;">${t('leadsColPhone')}</th>
+            <th style="padding:0.75rem 1rem; font-weight:700;">${t('leadsColEmail')}</th>
+            <th style="padding:0.75rem 1rem; font-weight:700;">${t('leadsColCity')}</th>
           </tr>
         </thead>
         <tbody>
           ${data.map((lead, i) => `
             <tr style="border-bottom:1px solid #E2E8F0; background:${i % 2 === 0 ? '#fff' : '#F7FAFC'};">
               <td style="padding:0.7rem 1rem; white-space:nowrap; color:#4A5568;">
-                ${new Date(lead.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}
+                ${new Date(lead.created_at).toLocaleDateString(locale, { month:'short', day:'numeric', year:'numeric' })}
               </td>
               <td style="padding:0.7rem 1rem; font-weight:600;">${esc(lead.name || '—')}</td>
               <td style="padding:0.7rem 1rem;">${esc(lead.business || '—')}</td>
@@ -436,7 +474,7 @@ async function loadLeads() {
         </tbody>
       </table>
     </div>
-    <p style="margin-top:1rem; color:#718096; font-size:0.85rem;">${data.length} lead${data.length !== 1 ? 's' : ''} total</p>`;
+    <p style="margin-top:1rem; color:#718096; font-size:0.85rem;">${totalStr}</p>`;
 }
 
 // ── GALLERY ───────────────────────────────────────────────────────────────────
@@ -445,7 +483,7 @@ function renderGalleryEditor() {
   if (!grid) return;
   const photos = draft.gallery || [];
   if (photos.length === 0) {
-    grid.innerHTML = '<p style="color:#718096; text-align:center; padding:2rem;">No photos yet. Upload some above!</p>';
+    grid.innerHTML = `<p style="color:#718096; text-align:center; padding:2rem;">${t('galleryNoPhotos')}</p>`;
     return;
   }
   grid.innerHTML = photos.map((url, i) => `
@@ -458,14 +496,14 @@ function renderGalleryEditor() {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.dataset.deleteGallery, 10);
       const url = draft.gallery[idx];
-      if (!confirm('Remove this photo from the gallery?')) return;
+      if (!confirm(t('galleryDeleteConfirm'))) return;
       draft.gallery.splice(idx, 1);
       if (url.includes('supabase')) {
         const path = url.split('/service-images/')[1];
         if (path) supabase.storage.from('service-images').remove([path]).catch(() => {});
       }
       renderGalleryEditor();
-      showToast('Photo removed. Click Save Changes to publish.');
+      showToast(t('galleryPhotoRemoved'));
     });
   });
 }
@@ -506,15 +544,16 @@ galleryFileInput.addEventListener('change', async () => {
   renderGalleryEditor();
 
   if (failed === 0) {
-    showToast(`${uploaded} photo${uploaded !== 1 ? 's' : ''} uploaded! Click Save Changes to publish.`);
+    const key = uploaded === 1 ? 'galleryUploaded' : 'galleryUploadedPlural';
+    showToast(t(key).replace('{n}', uploaded));
   } else {
-    showToast(`${uploaded} uploaded, ${failed} failed. Check your internet and try again.`, 'error');
+    showToast(t('galleryUploadFailed').replace('{u}', uploaded).replace('{f}', failed), 'error');
   }
 });
 
 // Toggle label update
 document.getElementById('announcement-enabled')?.addEventListener('change', function () {
-  $('announcement-enabled-label').textContent = this.checked ? 'Showing on website' : 'Hidden from website';
+  $('announcement-enabled-label').textContent = this.checked ? t('annShowing') : t('annHidden');
 });
 
 // Load leads / gallery when switching to those tabs
@@ -527,7 +566,7 @@ document.getElementById('sidebar-nav').addEventListener('click', e => {
 saveBtn.addEventListener('click', async () => {
   collectDraft();
   saveBtn.disabled = true;
-  saveBtn.textContent = '💾 Saving…';
+  saveBtn.textContent = t('saving');
   saveStatus.textContent = '';
 
   const { error } = await supabase
@@ -535,13 +574,13 @@ saveBtn.addEventListener('click', async () => {
     .upsert({ id: 1, content: draft, updated_at: new Date().toISOString() });
 
   if (error) {
-    showToast('Could not save. Please check your internet connection and try again.', 'error');
+    showToast(t('toastSaveError'), 'error');
     console.error(error);
   } else {
-    showToast('Your changes have been saved! The website will update in a moment.');
-    saveStatus.textContent = 'Last saved: ' + new Date().toLocaleTimeString();
+    showToast(t('toastSaved'));
+    saveStatus.textContent = t('lastSaved') + new Date().toLocaleTimeString();
   }
 
   saveBtn.disabled = false;
-  saveBtn.textContent = '💾 Save Changes';
+  saveBtn.textContent = t('saveBtn');
 });
